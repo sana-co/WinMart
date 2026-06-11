@@ -1,55 +1,103 @@
-import { Globe, Mail, MapPin, MessageCircle, Phone, Share2 } from 'lucide-react'
-import Logo from './Logo'
+import { Link } from 'react-router-dom';
+import { Mail, MapPin, Phone } from 'lucide-react';
+import { contactInfo } from '../data/mockData';
+import './Footer.css';
 
-function Footer() {
+const Footer = () => {
   return (
-    <footer className="border-t border-[var(--color-line)] bg-white">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr] lg:px-8">
-        <div className="space-y-4">
-          <Logo />
-          <p className="max-w-md text-sm leading-6 text-[var(--color-muted)]">
-            Win Mart Fashion brings fresh daily style picks across apparel, shoes,
-            and trend-led essentials with a polished retail experience.
-          </p>
-          <div className="flex gap-2">
-            {[Globe, Share2, MessageCircle].map((Icon, index) => (
-              <button
-                key={index}
-                type="button"
-                className="grid h-10 w-10 place-items-center rounded-lg bg-[var(--color-soft-blue)] text-[var(--color-primary)] transition hover:bg-[var(--color-primary)] hover:text-white"
-              >
-                <Icon size={18} />
-              </button>
-            ))}
+    <footer className="footer">
+      <div className="footer-content">
+        <div className="container">
+          <div className="footer-grid">
+            {/* About Section */}
+            <div className="footer-section">
+              <h3>About WinMart Fashion</h3>
+              <p>
+                Your one-stop destination for trendy, high-quality fashion at unbeatable prices. We believe in making style accessible to everyone.
+              </p>
+              <div className="social-links">
+                <a href={contactInfo.socialMedia.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                  <span>f</span>
+                </a>
+                <a href={contactInfo.socialMedia.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                  <span>ig</span>
+                </a>
+                <a href={contactInfo.socialMedia.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                  <span>x</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div className="footer-section">
+              <h3>Quick Links</h3>
+              <ul>
+                <li><Link to="/">Home</Link></li>
+                <li><Link to="/shop">Shop</Link></li>
+                <li><Link to="/about">About Us</Link></li>
+                <li><Link to="/contact">Contact</Link></li>
+                <li><Link to="/feedback">Feedback</Link></li>
+              </ul>
+            </div>
+
+            {/* Categories */}
+            <div className="footer-section">
+              <h3>Categories</h3>
+              <ul>
+                <li><Link to="/shop/womens">Women's Wear</Link></li>
+                <li><Link to="/shop/mens">Men's Wear</Link></li>
+                <li><Link to="/shop/accessories">Accessories</Link></li>
+              </ul>
+            </div>
+
+            {/* Customer Service */}
+            <div className="footer-section">
+              <h3>Customer Service</h3>
+              <ul>
+                <li><a href="#faq">FAQs</a></li>
+                <li><a href="#shipping">Shipping Info</a></li>
+                <li><a href="#returns">Returns & Exchanges</a></li>
+                <li><a href="#privacy">Privacy Policy</a></li>
+                <li><a href="#terms">Terms & Conditions</a></li>
+              </ul>
+            </div>
+
+            {/* Contact Info */}
+            <div className="footer-section">
+              <h3>Contact Us</h3>
+              <div className="contact-items">
+                <div className="contact-item">
+                  <Mail size={18} />
+                  <a href={`mailto:${contactInfo.email}`}>{contactInfo.email}</a>
+                </div>
+                <div className="contact-item">
+                  <Phone size={18} />
+                  <a href={`tel:${contactInfo.phone}`}>{contactInfo.phone}</a>
+                </div>
+                <div className="contact-item">
+                  <MapPin size={18} />
+                  <span>{contactInfo.address}</span>
+                </div>
+              </div>
+              <div className="business-hours">
+                <p><strong>Business Hours</strong></p>
+                <p>Weekdays: {contactInfo.businessHours.weekday}</p>
+                <p>Weekends: {contactInfo.businessHours.weekend}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Footer */}
+          <div className="footer-bottom">
+            <div className="footer-divider"></div>
+            <div className="footer-credits">
+              <p>&copy; 2024 WinMart Fashion. All rights reserved.</p>
+            </div>
           </div>
         </div>
-        <div>
-          <h3 className="mb-4 text-sm font-bold uppercase text-[var(--color-primary)]">
-            Shop
-          </h3>
-          <ul className="space-y-3 text-sm text-[var(--color-muted)]">
-            <li>Men's Wear</li>
-            <li>Women's Wear</li>
-            <li>Shoes</li>
-            <li>Hot Items</li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-4 text-sm font-bold uppercase text-[var(--color-primary)]">
-            Contact
-          </h3>
-          <ul className="space-y-3 text-sm text-[var(--color-muted)]">
-            <li className="flex gap-2"><MapPin size={17} /> Main Street, Colombo</li>
-            <li className="flex gap-2"><Phone size={17} /> +94 77 123 4567</li>
-            <li className="flex gap-2"><Mail size={17} /> hello@winmart.example</li>
-          </ul>
-        </div>
-      </div>
-      <div className="border-t border-[var(--color-line)] px-4 py-4 text-center text-xs text-[var(--color-muted)]">
-        Copyright 2026 Win Mart Fashion. UI preview only.
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

@@ -1,0 +1,44 @@
+.rating-stars {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.rating-stars.rating-sm .star {
+  font-size: var(--font-size-sm);
+}
+
+.rating-stars.rating-md .star {
+  font-size: var(--font-size-lg);
+}
+
+.rating-stars.rating-lg .star {
+  font-size: var(--font-size-2xl);
+}
+
+.star {
+  background: none;
+  border: none;
+  color: #D1D5DB;
+  cursor: default;
+  padding: 0;
+  line-height: 1;
+  transition: var(--transition);
+}
+
+.star.filled {
+  color: #FCD34D;
+}
+
+.rating-stars.interactive .star {
+  cursor: pointer;
+}
+
+.rating-stars.interactive .star:hover,
+.rating-stars.interactive .star:focus {
+  color: #FCD34D;
+  outline: none;
+}
+
+.rating-stars.interactive .star:disabled {
+  cursor: default;
+}

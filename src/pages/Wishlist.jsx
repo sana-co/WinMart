@@ -1,78 +1,72 @@
-import { Heart, ShoppingBag, Trash2 } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import ProductGrid from '../components/ProductGrid'
-import SectionHeader from '../components/SectionHeader'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Heart, Trash2 } from 'lucide-react';
+import { useApp } from '../context/AppContext';
+import { formatPrice } from '../utils/helpers';
+import './Wishlist.css';
 
-function Wishlist({ items, wishlistIds, onToggleWishlist, onRemove }) {
-  return (
-    <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-      <SectionHeader eyebrow="Wishlist" title="Saved items">
-        {items.length} item{items.length === 1 ? '' : 's'} saved locally in this UI.
-      </SectionHeader>
+const Wishlist = () => {
+  const { wishlist, toggleWishlist } = useApp();
 
-      {items.length === 0 ? (
-        <div className="grid place-items-center rounded-lg border border-dashed border-[var(--color-line)] bg-white px-4 py-16 text-center">
-          <div className="grid h-14 w-14 place-items-center rounded-lg bg-[var(--color-soft-red)] text-[var(--color-secondary)]">
-            <Heart size={26} />
+  if (wishlist.length === 0) {
+    return (
+      <div className="wishlist-empty">
+        <div className="container">
+          <div className="wishlist-empty-content">
+            <Heart size={44} />
+            <h1>Your Wishlist is Empty</h1>
+            <p>Save your favorite pieces here while you browse.</p>
+            <Link to="/shop" className="btn btn-primary">
+              Explore Products
+            </Link>
           </div>
-          <h2 className="mt-5 text-2xl font-black text-[var(--color-ink)]">
-            Your wishlist is empty
-          </h2>
-          <p className="mt-3 max-w-md text-sm leading-6 text-[var(--color-muted)]">
-            Add products from the catalog and they will appear here while you browse.
-          </p>
-          <Link
-            to="/"
-            className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[var(--color-primary)] px-6 text-sm font-extrabold text-white transition hover:bg-[var(--color-primary-strong)]"
-          >
-            <ShoppingBag size={18} />
-            Continue Shopping
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="wishlist-page">
+      <div className="container">
+        <div className="wishlist-header">
+          <div>
+            <h1>Wishlist</h1>
+            <p>{wishlist.length} saved {wishlist.length === 1 ? 'item' : 'items'}</p>
+          </div>
+          <Link to="/shop" className="btn btn-outline">
+            Continue Browsing
           </Link>
         </div>
-      ) : (
-        <>
-          <div className="mb-8 overflow-hidden rounded-lg border border-[var(--color-line)] bg-white shadow-sm">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="grid gap-4 border-b border-[var(--color-line)] p-4 last:border-b-0 sm:grid-cols-[96px_1fr_auto] sm:items-center"
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="h-24 w-24 rounded-lg object-cover"
-                />
+
+        <div className="wishlist-grid">
+          {wishlist.map((product) => (
+            <article key={product.id} className="wishlist-card">
+              <Link to={`/product/${product.id}`} className="wishlist-image">
+                <img src={product.image} alt={product.name} />
+              </Link>
+              <div className="wishlist-info">
                 <div>
-                  <p className="text-xs font-bold uppercase text-[var(--color-secondary)]">
-                    {item.category}
-                  </p>
-                  <h3 className="mt-1 font-extrabold text-[var(--color-ink)]">{item.name}</h3>
-                  <p className="mt-1 font-bold text-[var(--color-primary)]">
-                    ${item.price.toFixed(2)}
-                  </p>
+                  <h2>{product.name}</h2>
+                  <p>{product.description}</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => onRemove(item.id)}
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--color-soft-red)] px-4 text-sm font-bold text-[var(--color-secondary)] transition hover:bg-red-100"
-                >
-                  <Trash2 size={17} />
-                  Remove
-                </button>
+                <div className="wishlist-card-footer">
+                  <span>{formatPrice(product.price)}</span>
+                  <button
+                    type="button"
+                    className="wishlist-remove"
+                    onClick={() => toggleWishlist(product)}
+                    aria-label={`Remove ${product.name} from wishlist`}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
-            ))}
-          </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
-          <SectionHeader title="Wishlist product cards" />
-          <ProductGrid
-            products={items}
-            wishlistIds={wishlistIds}
-            onToggleWishlist={onToggleWishlist}
-          />
-        </>
-      )}
-    </section>
-  )
-}
-
-export default Wishlist
+export default Wishlist;

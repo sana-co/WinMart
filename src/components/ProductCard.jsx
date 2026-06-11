@@ -1,48 +1,105 @@
-import { Heart, Star } from 'lucide-react'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Heart } from 'lucide-react';
+import { useApp } from '../context/AppContext';
+import { formatPrice, calculateDiscount } from '../utils/helpers';
+import './ProductCard.css';
 
-function ProductCard({ product, isSaved, onToggleWishlist }) {
+const ProductCard = ({ product, onQuickView }) => {
+  const { isInWishlist, toggleWishlist } = useApp();
+  const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || null);
+  const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || null);
+
+  const discount = calculateDiscount(product.originalPrice, product.price);
+  const inWishlist = isInWishlist(product.id);
+
+  const handleToggleWishlist = () => {
+    toggleWishlist(product);
+  };
+
   return (
-    <article className="group overflow-hidden rounded-lg border border-[var(--color-line)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-[var(--shadow-card)]">
-      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-        />
-        <span className="absolute left-3 top-3 rounded-lg bg-white/95 px-3 py-1 text-xs font-bold text-[var(--color-primary)] shadow-sm">
-          {product.category}
-        </span>
-      </div>
-      <div className="space-y-4 p-4">
-        <div>
-          <h3 className="line-clamp-2 min-h-11 text-base font-bold leading-snug text-[var(--color-ink)]">
-            {product.name}
-          </h3>
-          <div className="mt-2 flex items-center justify-between gap-3">
-            <p className="text-lg font-extrabold text-[var(--color-secondary)]">
-              ${product.price.toFixed(2)}
-            </p>
-            <div className="flex items-center gap-1 text-sm font-semibold text-[var(--color-muted)]">
-              <Star size={16} className="fill-[var(--color-accent)] text-[var(--color-accent)]" />
-              {product.rating}
-            </div>
-          </div>
+    <div className="product-card">
+      {/* Image Section */}
+      <div className="product-image-wrapper">
+        <img src={product.image} alt={product.name} className="product-image" />
+        {discount > 0 && <div className="product-discount">{discount}% OFF</div>}
+        
+        <div className="product-overlay">
+          <button 
+            className="product-btn quick-view-btn"
+            onClick={() => onQuickView(product)}
+          >
+            Quick View
+          </button>
         </div>
+
         <button
-          type="button"
-          onClick={() => onToggleWishlist(product)}
-          className={`flex h-11 w-full items-center justify-center gap-2 rounded-lg px-4 text-sm font-bold transition ${
-            isSaved
-              ? 'bg-[var(--color-soft-red)] text-[var(--color-secondary)] hover:bg-red-100'
-              : 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)]'
-          }`}
+          className={`wishlist-btn ${inWishlist ? 'active' : ''}`}
+          onClick={handleToggleWishlist}
+          aria-label="Toggle wishlist"
         >
-          <Heart size={18} className={isSaved ? 'fill-current' : ''} />
-          {isSaved ? 'Saved' : 'Add to Wishlist'}
+          <Heart size={20} fill={inWishlist ? 'currentColor' : 'none'} />
         </button>
       </div>
-    </article>
-  )
-}
 
-export default ProductCard
+      {/* Product Info */}
+      <div className="product-info">
+        <h3 className="product-name">{product.name}</h3>
+
+        {/* Rating */}
+        <div className="product-rating">
+          <span className="stars">
+            {'⭐'.repeat(Math.floor(product.rating))}
+          </span>
+          <span className="rating-text">({product.reviews})</span>
+        </div>
+
+        {/* Price */}
+        <div className="product-price">
+          <span className="current-price">{formatPrice(product.price)}</span>
+          {product.originalPrice > product.price && (
+            <span className="original-price">{formatPrice(product.originalPrice)}</span>
+          )}
+        </div>
+
+        {/* Color Options */}
+        {product.colors && product.colors.length > 0 && (
+          <div className="product-colors">
+            {product.colors.map((color) => (
+              <button
+                key={color}
+                className={`color-btn ${selectedColor === color ? 'selected' : ''}`}
+                onClick={() => setSelectedColor(color)}
+                title={color}
+              >
+                {color.substring(0, 1)}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Size Options */}
+        {product.sizes && product.sizes.length > 0 && (
+          <div className="product-sizes">
+            {product.sizes.slice(0, 3).map((size) => (
+              <button
+                key={size}
+                className={`size-btn ${selectedSize === size ? 'selected' : ''}`}
+                onClick={() => setSelectedSize(size)}
+              >
+                {size}
+              </button>
+            ))}
+            {product.sizes.length > 3 && <span className="more-sizes">+{product.sizes.length - 3}</span>}
+          </div>
+        )}
+
+        <Link to={`/product/${product.id}`} className="product-btn">
+          View Details
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;
